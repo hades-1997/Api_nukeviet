@@ -1,7 +1,23 @@
-# Api_nukeviet
+
+# Lưu ý khi sử dụng API
+Nếu không bắt buộc không nên sử dụng API (Mặc định NukeViet < 4.5 không cung cấp API, bản NukeViet 4.5 trở đi sẽ không kích hoạt mặc định)
+
+Tại chức năng Cấu hình ⇒ Cấu hình chung cần Bật Remote API
+
+Quyền truy cập API tại phần Quản trị ⇒ Quyền truy cập API đã chọn đủ API Role có chứa API cần gọi.
+
+Cấp quyền ít nhất: Một API Roles chỉ nên có các quyền ít nhất, không nên cấp tất cả các quyền. Quyền có thể được thêm vào khi cần thiết và nên được thu hồi khi không còn được sử dụng.
+
+Quyền truy cập API, nên được giới hạn theo IP, Xóa Quyền truy cập API nếu không dùng nữa.
+
+Sử dụng HTTPS cho cả website, trong đó có API
+
+Nếu phải viết thêm API, hãy viết nó đơn giản: Mỗi khi bạn làm cho giải pháp phức tạp hơn một cách “không cần thiết”, bạn cũng có khả năng để lại một lỗ hổng
+
 Trong tài liệu này chúng tôi ví dụ module hiện tại là module page đang chuẩn bị lập trình chức năng API.
 
 Lưu ý: Tên module, tên file Api và tên Class phân biệt chữ hoa và chữ thường.
+
 Bước 1: Tạo thư mục Api để chứa các file Api
 
 Trong thư mục của module tạo thêm thư mục Api. Khi đó tồn tại đường dẫn modules/page/Api
@@ -22,7 +38,7 @@ CreatArticle.php
  * @Createdate Jun 20, 2010 8:59:32 PM
  */
  
-namespace NukeViet\Module\page\Api;
+namespace NukeViet\Module\News\Api;
  
 use NukeViet\Api\Api;
 use NukeViet\Api\ApiResult;
@@ -32,7 +48,7 @@ if (!defined('NV_ADMIN') or !defined('NV_MAINFILE')) {
     die('Stop!!!');
 }
  
-class CreatArticle implements IApi
+class getListRows implements IApi
 {
     private $result;
  
@@ -58,6 +74,7 @@ class CreatArticle implements IApi
      */
     public function setResultHander(ApiResult $result)
     {
+        
         $this->result = $result;
     }
  
@@ -67,8 +84,37 @@ class CreatArticle implements IApi
      */
     public function execute()
     {
-        // @TODO
- 
+        global $db,$nv_Request,$db_config,$global_config;
+
+        $module_name = Api::getModuleInfo();
+		$module_data = $module_name['module_data'];
+        $page = 1;
+		$per_page = 10;
+
+		$sql = 'SELECT id, catid, topicid, admin_id, author, sourceid, addtime, edittime, publtime, title, alias, hometext, homeimgfile, homeimgalt, homeimgthumb, allowed_rating, external_link, hitstotal, hitscm, total_rating, click_rating FROM '. NV_PREFIXLANG . '_' . $module_data . '_rows WHERE status = 1 ORDER BY addtime DESC LIMIT 5 OFFSET '.($page - 1) * $per_page;
+        try {
+            $result = $db->query($sql);
+            if (!empty($result)){
+                $array_catpage = [];
+                foreach($result as $row) {
+                    $array_catpage[] = $row ;
+                }
+                $this->result->set('data', $array_catpage );
+                $this->result->setMessage('OKE');
+                $this->result->setSuccess();
+
+            } else{
+                $this->result->set('error', 'Dữ liệu trống!!!');
+                $this->result->setError('Error');
+                $this->result->setSuccess();
+            }
+        } 
+        catch (Exception $e) {
+            $this->result->set('error', $e);
+            $this->result->setError('Error');
+            $this->result->setSuccess();
+        }
+        
         return $this->result->getResult();
     }
 }
@@ -213,6 +259,12 @@ $this->result->set($key, $value);
 $lang_module['api_modulename']
 $lang_module['api_modulename_class']
   ```
+ * Ví dụ:
+ ```
+$lang_module['api_System_getListRows'] = 'Lấy ra tất cả tin tức';
+$lang_module['api_System'] = 'Tin Tức';
+```
+ 
 # API của hệ thống
 
 Tương tự như API của module ngoại trừ các điểm khác sau:
@@ -282,14 +334,14 @@ $params= [
 ];
 $return = nv_local_api('GetUsername', $params, 'admin', 'user');
 ```
-/*
+
  Với:
   * $return: Dữ liệu API sẽ trả về
   * 'GetUsername': Tên API hoặc action khi remote
   * $params: Mảng dữ liệu truyền vào API
   * 'admin': username của tài khoản admin
   * 'user': Module xử lý
-*/
+
 Có thể xem thêm về hàm nv_local_api tại: …/includes/function.php
   
  # Cấu hình chạy post main
