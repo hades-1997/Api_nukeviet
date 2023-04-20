@@ -14,13 +14,13 @@ Sử dụng HTTPS cho cả website, trong đó có API
 
 Nếu phải viết thêm API, hãy viết nó đơn giản: Mỗi khi bạn làm cho giải pháp phức tạp hơn một cách “không cần thiết”, bạn cũng có khả năng để lại một lỗ hổng
 
-Trong tài liệu này chúng tôi ví dụ module hiện tại là module page đang chuẩn bị lập trình chức năng API.
+# Trong tài liệu này chúng tôi ví dụ module hiện tại là module news đang chuẩn bị lập trình chức năng API.
 
 Lưu ý: Tên module, tên file Api và tên Class phân biệt chữ hoa và chữ thường.
 
 Bước 1: Tạo thư mục Api để chứa các file Api
 
-Trong thư mục của module tạo thêm thư mục Api. Khi đó tồn tại đường dẫn modules/page/Api
+Trong thư mục của module tạo thêm thư mục Api. Khi đó tồn tại đường dẫn modules/News/Api
 
 Bước 2: Tạo file trong thư mục Api
 
