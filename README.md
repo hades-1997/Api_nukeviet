@@ -124,13 +124,14 @@ Giải thích code như sau:
 
 # Namespaces
 ```
-namespace NukeViet\Module\page\Api;
+namespace NukeViet\Module\News\Api;
 ```
 # Quy luật:
+
 ```
 NukeViet\Module\<ModuleFile>\Api
 ```
-* <ModuleFile> chính là tên thư mục chứa module, trong ví dụ này là page.
+* <ModuleFile> chính là tên thư mục chứa module, trong ví dụ này là News.
 
 # Sau khi đặt namespace, ta khai báo sử dụng các class NukeViet Core hỗ trợ:
 ```
@@ -151,25 +152,18 @@ class CreatArticle implements IApi
   ```
 public static function getAdminLev();
  ```
-/**
  * Danh mục, cũng là khóa ngôn ngữ của API
  * Nếu không có danh mục thì trả về chuỗi rỗng
- */
-  ```
+ ```
 public static function getCat();
  ```
-/**
  * Thiết lập trình xử lý kết quả
- *
  * @param ApiResult $result
- */
-  ```
+ ```
 public function setResultHander(ApiResult $result);
  ```
-/**
  * Thực thi API
- */
-  ```
+```
 public function execute();
 ``` 
 * Lưu ý: Class name chính là tên file. Ví dụ class name là CreatArticle thì file sẽ là module/Page/Api/CreatArticle.php
@@ -249,7 +243,7 @@ $this->result->setSuccess();
 Đánh dấu lỗi:
 ```
 $this->result->setError();
-  ```
+ ```
 Các dữ liệu khác:
 ```
 $this->result->set($key, $value);
@@ -276,7 +270,7 @@ namespace là namespace NukeViet\Api;
 Ta có thể dùng hàm nv_local_api, cụ thể như sau
 ```
 $return = nv_local_api($cmd, $params, $adminidentity = '', $module = '');
-  ```
+ ```
 Trong đó:
 
 * $return: là kết quả API trả về
@@ -324,17 +318,14 @@ curl_setopt($ch, CURLOPT_POST, sizeof($request));
 curl_setopt($ch, CURLOPT_POSTFIELDS, $str);
 $return = curl_exec($ch);  //Dữ liệu API sẽ trả về
 curl_close($ch);
-  
  ```
 Với hàm nv_local_api, ta sử dụng:
-  
 ```
 $params= [
      'userid' => $userid
 ];
 $return = nv_local_api('GetUsername', $params, 'admin', 'user');
 ```
-
  Với:
   * $return: Dữ liệu API sẽ trả về
   * 'GetUsername': Tên API hoặc action khi remote
@@ -343,15 +334,17 @@ $return = nv_local_api('GetUsername', $params, 'admin', 'user');
   * 'user': Module xử lý
 
 Có thể xem thêm về hàm nv_local_api tại: …/includes/function.php
-  
+	
  # Cấu hình chạy post main
+	
  * Headers 
+	
   ```
   Accept : application/json
   Content-Type : application/json
-  
   ```
   # Cấu hình body form-data
+	
   ```
   apikey : 
   hashsecret : 
@@ -361,6 +354,7 @@ Có thể xem thêm về hàm nv_local_api tại: …/includes/function.php
   language : 
   ```
   # Ẩn timestamp trên file api.php 
+	
   ```
   // if ($api_credential['timestamp'] + 5 < NV_CURRENTTIME or $api_credential['timestamp'] - 5 > NV_CURRENTTIME) {
     ////   Sai lệch thời gian hơn 5 giây
